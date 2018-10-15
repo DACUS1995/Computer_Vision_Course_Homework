@@ -28,6 +28,7 @@ class BaseFilter():
 				new_image[x][y][1] = sum_g
 				new_image[x][y][2] = sum_b
 
+		new_image = new_image.astype(int)
 		return new_image
 
 	def generate_filter(self):

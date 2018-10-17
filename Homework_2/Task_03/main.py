@@ -1,7 +1,11 @@
 import utils
+import numpy as np
 
 from Task_03.sobel_filter import SobelFilter
 from Task_03.gaussian_filter import GaussianFilter
+
+HIGH_THRESHOLD = 255 * 0.7
+LOW_THRESHOLD = 255 * 0.3
 
 def run_edge_tracing_with_histeresis(image):
 	print("---> Running Tracing edges with hysteresis")
@@ -11,7 +15,23 @@ def run_edge_tracing_with_histeresis(image):
 def run_double_threshold(image):
 	print("---> Running Threshold")
 
-	return image
+	strong_edges = np.zeros([image.shape[0], image.shape[1]])
+	weak_edges = np.zeros([image.shape[0], image.shape[1]])
+
+	for x in range(image.shape[0]):
+		for y in range(image.shape[1]):
+			if image[x][y][0] < LOW_THRESHOLD:
+				image[x][y][0] = 0
+				image[x][y][1] = 0
+				image[x][y][2] = 0
+			
+			if image[x][y][0] > LOW_THRESHOLD and image[x][y][0] < HIGH_THRESHOLD:
+				weak_edges[x][y] = image[x][y][0]
+
+			if image[x][y][0] > HIGH_THRESHOLD:
+				strong_edges[x][y] = image[x][y][0]
+
+	return image, strong_edges, weak_edges
 
 def run_suppression(image, angle_map):
 	print("---> Running Suppression")
@@ -54,8 +74,8 @@ def run_edge_detector(image):
 	image = apply_gaussian_filter(image)
 	image, angle_map = compute_gradients(image)
 	image = run_suppression(image, angle_map)
-	image = run_double_threshold(image)
-	image = run_edge_tracing_with_histeresis(image)
+	image, strong_edges, weak_edges = run_double_threshold(image)
+	image = run_edge_tracing_with_histeresis(strong_edges)
 
 	return image
 

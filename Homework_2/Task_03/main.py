@@ -21,7 +21,7 @@ def run_edge_tracing_with_histeresis(image, strong_edges, weak_edges):
 				and strong_edges[x+1][y] == 0 
 				and strong_edges[x+1][y-1] == 0 
 				and strong_edges[x][y-1] == 0):
-					image[x][y][:] = 0
+					image[x,y,:] = 0
 
 	return image
 	
@@ -35,7 +35,7 @@ def run_double_threshold(image):
 	for x in range(image.shape[0]):
 		for y in range(image.shape[1]):
 			if image[x][y][0] < LOW_THRESHOLD:
-				image[x][y][:] = 0
+				image[x,y,:] = 0
 			
 			if image[x][y][0] > LOW_THRESHOLD and image[x][y][0] < HIGH_THRESHOLD:
 				weak_edges[x][y] = image[x][y][0]

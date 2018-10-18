@@ -7,10 +7,24 @@ from Task_03.gaussian_filter import GaussianFilter
 HIGH_THRESHOLD = 255 * 0.7
 LOW_THRESHOLD = 255 * 0.3
 
-def run_edge_tracing_with_histeresis(image):
+def run_edge_tracing_with_histeresis(image, strong_edges, weak_edges):
 	print("---> Running Tracing edges with hysteresis")
 
+	for x in range(1, image.shape[0] - 1):
+		for y in range(1, image.shape[1] - 1):
+			if weak_edges[x][y] != 0:
+				if (strong_edges[x-1][y-1] == 0 
+				and strong_edges[x-1][y] == 0 
+				and strong_edges[x-1][y+1] == 0 
+				and strong_edges[x][y+1] == 0 
+				and strong_edges[x+1][y+1] == 0 
+				and strong_edges[x+1][y] == 0 
+				and strong_edges[x+1][y-1] == 0 
+				and strong_edges[x][y-1] == 0):
+					image[x][y][:] = 0
+
 	return image
+	
 
 def run_double_threshold(image):
 	print("---> Running Threshold")
@@ -21,9 +35,7 @@ def run_double_threshold(image):
 	for x in range(image.shape[0]):
 		for y in range(image.shape[1]):
 			if image[x][y][0] < LOW_THRESHOLD:
-				image[x][y][0] = 0
-				image[x][y][1] = 0
-				image[x][y][2] = 0
+				image[x][y][:] = 0
 			
 			if image[x][y][0] > LOW_THRESHOLD and image[x][y][0] < HIGH_THRESHOLD:
 				weak_edges[x][y] = image[x][y][0]
@@ -32,6 +44,7 @@ def run_double_threshold(image):
 				strong_edges[x][y] = image[x][y][0]
 
 	return image, strong_edges, weak_edges
+
 
 def run_suppression(image, angle_map):
 	print("---> Running Suppression")
@@ -55,6 +68,7 @@ def run_suppression(image, angle_map):
 
 	return image
 
+
 def compute_gradients(image):
 	print("---> Running Sobel Filter")
 	sobel_filter = SobelFilter()
@@ -66,6 +80,7 @@ def compute_gradients(image):
 def apply_gaussian_filter(image):
 	print("---> Running Gaussian Filter")
 	gaussian_filter = GaussianFilter(3)
+	image = gaussian_filter.filter_image(image)
 
 	return image
 
@@ -75,9 +90,10 @@ def run_edge_detector(image):
 	image, angle_map = compute_gradients(image)
 	image = run_suppression(image, angle_map)
 	image, strong_edges, weak_edges = run_double_threshold(image)
-	image = run_edge_tracing_with_histeresis(strong_edges)
+	image = run_edge_tracing_with_histeresis(image, strong_edges, weak_edges)
 
 	return image
+
 
 def main():
 	image = utils.load_image(image_name = "stop_sign_01.jpg")

@@ -85,7 +85,7 @@ def apply_gaussian_filter(image):
 	return image
 
 
-def run_edge_detector(image):
+def run_canny_edge_detector(image):
 	image = apply_gaussian_filter(image)
 	image, angle_map = compute_gradients(image)
 	image = run_suppression(image, angle_map)
@@ -96,8 +96,8 @@ def run_edge_detector(image):
 
 
 def main():
-	image = utils.load_image(image_name = "stop_sign_01.jpg")
-	image = run_edge_detector(image)
+	image = utils.load_image(image_name = "stop_signs/stop_sign_01.jpg")
+	image = run_canny_edge_detector(image)
 
 	utils.show_image(image)
 

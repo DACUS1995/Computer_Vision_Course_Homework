@@ -9,7 +9,7 @@ current_dir_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 argv = sys.argv
 
 def load_image(image_name):
-	path_to_image = os.path.join(current_dir_path, "Homework_2", "images", "stop_signs", image_name)
+	path_to_image = os.path.join(current_dir_path, "Homework_2", "images", image_name)
 	image_matrix = mpimg.imread(path_to_image)
 	return image_matrix
 

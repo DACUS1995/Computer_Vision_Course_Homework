@@ -11,12 +11,16 @@ class TemplateFinder():
 		bounded_images = []
 
 		# Create several scalling factors
-		for scale in np.linspace(0.2, 1.2, 8):
+		for scale in np.linspace(0.1, 1.2, 8):
 			print(":: Using scale: ", scale)
 			resized_template = TemplateFinder.resize_image(template, scale)
 
 			# round all non-zero pixel for consistent reward for mixel matching
 			resized_template = np.ceil(resized_template)
+
+			# Check that the image is bigger than the template
+			if image.shape[0] < resized_template.shape[0] or image.shape[1] < resized_template.shape[1]:
+				break
 
 			score_map = TemplateFinder.conv_search(image, resized_template)
 			largest_value_index = np.argmax(score_map)
@@ -41,11 +45,11 @@ class TemplateFinder():
 			bounded_images.append(new_image)
 
 			# --- Show additional info ---
-			# # print(corner_upper_left)
-			# # print(score_map[corner_upper_left[0]][corner_upper_left[1]])
-			# # print(np.amax(score_map))
-			# utils.show_image(new_image)
-			# utils.show_image(score_map)
+			# print(corner_upper_left)
+			# print(score_map[corner_upper_left[0]][corner_upper_left[1]])
+			# print(np.amax(score_map))
+			utils.show_image(new_image)
+			utils.show_image(score_map)
 		return (score_list, bounded_images)
 		
 	@staticmethod
@@ -58,7 +62,7 @@ class TemplateFinder():
 		template_x_size = template.shape[0]
 		template_y_size = template.shape[1]
 
-		score_map = np.empty((image.shape[0] - template_x_size, image.shape[0] - template_y_size))
+		score_map = np.empty((image.shape[0] - template_x_size, image.shape[1] - template_y_size))
 
 		#Make sure the image tensor is range bounded to 0-1 values
 		image = image / np.amax(image)

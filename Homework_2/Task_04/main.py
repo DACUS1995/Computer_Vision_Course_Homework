@@ -2,29 +2,31 @@ import numpy as np
 
 import utils
 import Task_03.main as fn
+from Task_04.template_finder import TemplateFinder
 
 def extract_edges(image):
-	print("---> Preprocessing target image")
+	print("--> Preprocessing target image")
 	image = fn.apply_gaussian_filter(image)
 	image, _ = fn.compute_gradients(image)
 	image, strong_edges, weak_edges = fn.run_double_threshold(image)
 	image = fn.run_edge_tracing_with_histeresis(image, strong_edges, weak_edges)
-	utils.show_image(image)
+	# utils.show_image(image)
 
 	return image
 
-def search_template(image, template_image):
-	print("---> Seaching for template image")
-	return image
+def search_template(image, preprocessed_image, template_image):
+	print("--> Seaching for template image")
+	return TemplateFinder.find_template(image, preprocessed_image, template_image)
 
-def compute_results(image, score_map):
-	print("---> Computing results")
-	return image
+def compute_results(score_list, bounded_images):
+	print("--> Computing results")
+
+	return bounded_images[np.argmax(score_list)]
 
 def run_image_detection(image, template_image):
 	preprocessed_image = extract_edges(image)
-	score_map = search_template(preprocessed_image, template_image)
-	resulted_image = compute_results(image, score_map)
+	score_list, bounded_images = search_template(image, preprocessed_image, template_image)
+	resulted_image = compute_results(score_list, bounded_images)
 
 	return resulted_image
 

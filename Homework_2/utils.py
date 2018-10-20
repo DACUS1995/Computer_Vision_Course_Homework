@@ -15,7 +15,10 @@ def load_image(image_name):
 
 
 def show_image(image):
-	plt.imshow(image)
+	if len(image.shape) == 3:
+		plt.imshow(image)
+	else:
+		plt.imshow(image, cmap="gray")
 	plt.show()
 
 if __name__ == "__main__":

@@ -23,6 +23,8 @@ class TemplateFinder():
 				break
 
 			score_map = TemplateFinder.conv_search(image, resized_template)
+
+			#TODO add multi detection + try Chamfer distance
 			
 			largest_value_index = np.argmax(score_map)
 			corner_upper_left = ((int)(largest_value_index / score_map.shape[1]), (int)(largest_value_index % score_map.shape[1]))

@@ -3,6 +3,7 @@ import numpy as np
 import math
 
 from Task_03.base_filter import BaseFilter
+import utils
 
 class SobelFilter(BaseFilter):
 	def __init__(self):
@@ -41,7 +42,7 @@ class SobelFilter(BaseFilter):
 					for j in range(self.size):
 
 						new_pixel_value = 0.3 * image[x+i][y+j][0] + 0.59 * image[x+i][y+j][1] + 0.11 * image[x+i][y+j][2]
-
+						
 						# sum_r_h += image[x+i][y+j][0] * self.filter[i][j]
 						# sum_g_h += image[x+i][y+j][1] * self.filter[i][j]
 						# sum_b_h += image[x+i][y+j][2] * self.filter[i][j]
@@ -58,10 +59,8 @@ class SobelFilter(BaseFilter):
 				# new_image[x][y][2] = math.sqrt((math.pow(sum_b_h, 2) + math.pow(sum_b_v, 2)))
 
 				angle_map[x][y] = math.fabs((math.atan2(sum_v, sum_h) * 180) / math.pi)
-
-				new_image[x][y][0] = math.sqrt(math.pow(sum_h, 2) + math.pow(sum_v, 2))
-				new_image[x][y][1] = new_image[x][y][0]
-				new_image[x][y][2] = new_image[x][y][0]
+				new_image[x][y][0:3] = math.sqrt(math.pow(sum_h, 2) + math.pow(sum_v, 2))
 
 		new_image = new_image.astype(int)
+		new_image = np.clip(new_image, 0, 255)
 		return new_image, angle_map

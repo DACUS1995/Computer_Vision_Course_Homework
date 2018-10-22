@@ -23,9 +23,10 @@ class TemplateFinder():
 				break
 
 			score_map = TemplateFinder.conv_search(image, resized_template)
+			
 			largest_value_index = np.argmax(score_map)
 			corner_upper_left = ((int)(largest_value_index / score_map.shape[1]), (int)(largest_value_index % score_map.shape[1]))
-
+			
 			new_image = np.copy(original_image)
 			cv2.rectangle(
 				new_image, 
@@ -45,9 +46,9 @@ class TemplateFinder():
 			bounded_images.append(new_image)
 
 			# --- Show additional info ---
-			# print(corner_upper_left)
-			# print(score_map[corner_upper_left[0]][corner_upper_left[1]])
-			# print(np.amax(score_map))
+			print(corner_upper_left)
+			print(score_map[corner_upper_left[0]][corner_upper_left[1]])
+			print(np.amax(score_map))
 			utils.show_image(new_image)
 			utils.show_image(score_map)
 		return (score_list, bounded_images)
@@ -62,6 +63,9 @@ class TemplateFinder():
 		template_x_size = template.shape[0]
 		template_y_size = template.shape[1]
 
+		print(np.amax(image))
+		print(np.amax(template))
+
 		score_map = np.empty((image.shape[0] - template_x_size, image.shape[1] - template_y_size))
 
 		#Make sure the image tensor is range bounded to 0-1 values
@@ -70,5 +74,5 @@ class TemplateFinder():
 		for x in range(image.shape[0] - template_x_size):
 			for y in range(image.shape[1] - template_y_size):
 				score_map[x][y] = np.sum(image[x : x + template_x_size, y : y + template_y_size, 0] * template[:,:,0])
-				# score_map[x, y] = (score_map[x, y]) / (template_x_size * template_y_size)
+				score_map[x, y] = (score_map[x, y]) / (template_x_size * template_y_size)
 		return score_map

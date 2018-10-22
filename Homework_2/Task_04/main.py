@@ -10,6 +10,7 @@ def extract_edges(image):
 	image, _ = fn.compute_gradients(image)
 	image, strong_edges, weak_edges = fn.run_double_threshold(image)
 	image = fn.run_edge_tracing_with_histeresis(image, strong_edges, weak_edges)
+
 	# utils.show_image(image)
 
 	return image
@@ -31,7 +32,7 @@ def run_image_detection(image, template_image):
 	return resulted_image
 
 def main():
-	image = utils.load_image(image_name = "stop_signs/stop_sign_07.jpg")
+	image = utils.load_image(image_name = "stop_signs/stop_sign_04.jpg")
 	template_image = utils.load_image(image_name = "template.png")
 
 	resulted_image = run_image_detection(image, template_image)

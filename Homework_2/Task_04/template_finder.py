@@ -51,6 +51,7 @@ class TemplateFinder():
 			print(np.amax(score_map))
 			utils.show_image(new_image)
 			utils.show_image(score_map)
+			utils.show_image(resized_template)
 		return (score_list, bounded_images)
 		
 	@staticmethod
@@ -74,5 +75,6 @@ class TemplateFinder():
 		for x in range(image.shape[0] - template_x_size):
 			for y in range(image.shape[1] - template_y_size):
 				score_map[x][y] = np.sum(image[x : x + template_x_size, y : y + template_y_size, 0] * template[:,:,0])
-				score_map[x, y] = (score_map[x, y]) / (template_x_size * template_y_size)
+				# It may be better to not use the score normalization based on the number of active pixels in the template image
+				# score_map[x, y] = (score_map[x, y]) / (np.where(template > 0)[0].size)
 		return score_map

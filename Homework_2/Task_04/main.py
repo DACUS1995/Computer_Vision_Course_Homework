@@ -3,6 +3,7 @@ import numpy as np
 import utils
 import Task_03.main as fn
 from Task_04.template_finder import TemplateFinder
+from Task_04.chamfer_distance import ChamferDistance
 
 MULTI_DETECTION = True
 
@@ -17,6 +18,10 @@ def extract_edges(image):
 
 	return image
 
+def search_using_chamfer_distance(preprocessed_image, template):
+		image_map = ChamferDistance.compute_distance_map(preprocessed_image)
+		ChamferDistance.search_smallest_distance(image_map, template)
+
 def search_template(image, preprocessed_image, template_image, multi_detection = False):
 	print("--> Seaching for template image")
 	return TemplateFinder.find_template(image, preprocessed_image, template_image, multi_detection)
@@ -28,6 +33,8 @@ def compute_results(score_list, bounded_images):
 def run_image_detection(image, template_image):
 	preprocessed_image = extract_edges(image)
 
+	search_using_chamfer_distance(preprocessed_image, template_image)
+
 	# score_list, bounded_images = search_template(image, preprocessed_image, template_image)
 	score_list, bounded_images = search_template(image, preprocessed_image, template_image, multi_detection=MULTI_DETECTION)
 
@@ -36,7 +43,7 @@ def run_image_detection(image, template_image):
 	return resulted_image
 
 def main():
-	image = utils.load_image(image_name = "stop_signs/stop_sign_06.jpg")
+	image = utils.load_image(image_name = "stop_signs/stop_sign_01.jpg")
 	template_image = utils.load_image(image_name = "template.png")
 
 	resulted_image = run_image_detection(image, template_image)

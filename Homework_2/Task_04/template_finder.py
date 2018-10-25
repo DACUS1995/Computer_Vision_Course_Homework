@@ -88,8 +88,8 @@ class TemplateFinder():
 		template_x_size = template.shape[0]
 		template_y_size = template.shape[1]
 
-		print(np.amax(image))
-		print(np.amax(template))
+		# print(np.amax(image))
+		# print(np.amax(template))
 
 		score_map = np.empty((image.shape[0] - template_x_size, image.shape[1] - template_y_size))
 

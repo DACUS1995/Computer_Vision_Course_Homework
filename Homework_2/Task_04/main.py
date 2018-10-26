@@ -18,27 +18,31 @@ def extract_edges(image):
 
 	return image
 
-def search_using_chamfer_distance(preprocessed_image, template):
-		image_map = ChamferDistance.compute_distance_map(preprocessed_image)
-		ChamferDistance.search_smallest_distance(image_map, template)
+def search_using_chamfer_distance(original_image, preprocessed_image, template):
+	print("--> Running Chamfer Distance")
+	image_map = ChamferDistance.compute_distance_map(preprocessed_image)
+	return ChamferDistance.find_template(original_image, image_map, template)
 
 def search_template(image, preprocessed_image, template_image, multi_detection = False):
 	print("--> Seaching for template image")
 	return TemplateFinder.find_template(image, preprocessed_image, template_image, multi_detection)
 
-def compute_results(score_list, bounded_images):
+def compute_results(score_list, bounded_images, method_used):
 	print("--> Computing results")
-	return bounded_images[np.argmax(score_list)]
+	if method_used == "template_matching":
+		return bounded_images[np.argmax(score_list)]
+	else:
+		return bounded_images[np.argmin(score_list)]
 
 def run_image_detection(image, template_image):
 	preprocessed_image = extract_edges(image)
 
-	search_using_chamfer_distance(preprocessed_image, template_image)
+	score_list, bounded_images = search_using_chamfer_distance(image, preprocessed_image, template_image)
 
 	# score_list, bounded_images = search_template(image, preprocessed_image, template_image)
 	# score_list, bounded_images = search_template(image, preprocessed_image, template_image, multi_detection=MULTI_DETECTION)
 
-	resulted_image = compute_results(score_list, bounded_images)
+	resulted_image = compute_results(score_list, bounded_images, method_used="Chamfer")
 
 	return resulted_image
 

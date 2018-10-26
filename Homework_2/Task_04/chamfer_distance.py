@@ -7,19 +7,22 @@ class ChamferDistance():
 		template_x_size = template.shape[0]
 		template_y_size = template.shape[1]
 
-		score_map = np.empty((image_map.shape[0], image_map.shape[1]))
+		score_map = np.empty((image_map.shape[0] - template_x_size, image_map.shape[1] - template_y_size))
 
 		utils.show_image(template)
 
 		for x in range(image_map.shape[0] - template_x_size):
-			print(x)
 			for y in range(image_map.shape[1] - template_y_size):
+				sum = 0
 
-				for i in range(x, x + template_x_size):
-					for j in range(y, y + template_y_size):
-						if template[x][y][0] == 1:
-							score_map[x][y] += image_map[x][y][0]
+				sum = np.sum(image_map[x:x+template_x_size, y:y+template_y_size, 0] * template[:,:,0])
 
+				# for i in range(template_x_size):
+				# 	for j in range(template_y_size):
+				# 		if template[i][j][0] == 1:
+				# 			sum += image_map[i+x][j+y][0]
+							
+				score_map[x][y] = sum
 		utils.show_image(score_map)
 
 	@staticmethod

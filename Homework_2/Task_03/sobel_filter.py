@@ -25,6 +25,9 @@ class SobelFilter(BaseFilter):
 		new_image = np.empty((x_dim - self.size, y_dim - self.size, 3))
 		angle_map = np.empty((x_dim - self.size, y_dim - self.size))
 
+		new_pixel_map = np.empty((image.shape[0], image.shape[1]))
+		new_pixel_map = 0.3 * image[:,:, 0] + 0.59 * image[:,:, 1] + 0.11 * image[:,:, 2]
+	
 		for x in range(x_dim - self.size):
 			for y in range(y_dim - self.size):
 				# sum_r_v = 0
@@ -38,21 +41,25 @@ class SobelFilter(BaseFilter):
 				sum_h = 0
 				sum_v = 0
 
-				for i in range(self.size):
-					for j in range(self.size):
+				sum_h = np.sum(new_pixel_map[x:x+self.size, y:y+self.size] * self.filter)
+				sum_v = np.sum(new_pixel_map[x:x+self.size, y:y+self.size] * np.transpose(self.filter))
 
-						new_pixel_value = 0.3 * image[x+i][y+j][0] + 0.59 * image[x+i][y+j][1] + 0.11 * image[x+i][y+j][2]
+
+				# for i in range(self.size):
+				# 	for j in range(self.size):
+
+				# 		new_pixel_value = 0.3 * image[x+i][y+j][0] + 0.59 * image[x+i][y+j][1] + 0.11 * image[x+i][y+j][2]
 						
-						# sum_r_h += image[x+i][y+j][0] * self.filter[i][j]
-						# sum_g_h += image[x+i][y+j][1] * self.filter[i][j]
-						# sum_b_h += image[x+i][y+j][2] * self.filter[i][j]
+				# 		# sum_r_h += image[x+i][y+j][0] * self.filter[i][j]
+				# 		# sum_g_h += image[x+i][y+j][1] * self.filter[i][j]
+				# 		# sum_b_h += image[x+i][y+j][2] * self.filter[i][j]
 
-						# sum_r_v += image[x+i][y+j][0] * self.filter[j][i]
-						# sum_g_v += image[x+i][y+j][1] * self.filter[j][i]
-						# sum_b_v += image[x+i][y+j][2] * self.filter[j][i]
+				# 		# sum_r_v += image[x+i][y+j][0] * self.filter[j][i]
+				# 		# sum_g_v += image[x+i][y+j][1] * self.filter[j][i]
+				# 		# sum_b_v += image[x+i][y+j][2] * self.filter[j][i]
 
-						sum_h += new_pixel_value * self.filter[i][j]
-						sum_v += new_pixel_value * self.filter[j][i]
+				# 		sum_h += new_pixel_value * self.filter[i][j]
+				# 		sum_v += new_pixel_value * self.filter[j][i]
 
 				# new_image[x][y][0] = math.sqrt(math.pow(sum_r_h, 2) + math.pow(sum_r_v, 2))
 				# new_image[x][y][1] = math.sqrt((math.pow(sum_g_h, 2) + math.pow(sum_g_v, 2)))

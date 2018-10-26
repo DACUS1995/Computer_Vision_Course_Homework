@@ -36,7 +36,7 @@ def run_image_detection(image, template_image):
 	search_using_chamfer_distance(preprocessed_image, template_image)
 
 	# score_list, bounded_images = search_template(image, preprocessed_image, template_image)
-	score_list, bounded_images = search_template(image, preprocessed_image, template_image, multi_detection=MULTI_DETECTION)
+	# score_list, bounded_images = search_template(image, preprocessed_image, template_image, multi_detection=MULTI_DETECTION)
 
 	resulted_image = compute_results(score_list, bounded_images)
 

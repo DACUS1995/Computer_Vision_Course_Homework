@@ -10,7 +10,7 @@ class ChamferDistance():
 		bounded_images = []
 		
 		# Create several scalling factors
-		for scale in np.linspace(0.1, 1.2, 8):
+		for scale in np.linspace(0.3, 1.2, 5):
 			print(":: Using scale: ", scale)
 
 			resized_template = ChamferDistance.resize_image(template, scale)
@@ -25,6 +25,7 @@ class ChamferDistance():
 			score_map = ChamferDistance.search_smallest_distance(image_map, resized_template)
 
 			smallest_value = np.amin(score_map)
+			print(smallest_value)
 			smallest_value_pos = np.argmin(score_map)
 			smallest_value_pos = ((int)(smallest_value_pos / score_map.shape[1]), (int)(smallest_value_pos % score_map.shape[1]))
 

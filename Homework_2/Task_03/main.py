@@ -13,14 +13,19 @@ def run_edge_tracing_with_histeresis(image, strong_edges, weak_edges):
 	for x in range(1, image.shape[0] - 1):
 		for y in range(1, image.shape[1] - 1):
 			if weak_edges[x][y] != 0:
-				if (strong_edges[x-1][y-1] == 0 
-				and strong_edges[x-1][y] == 0 
-				and strong_edges[x-1][y+1] == 0 
-				and strong_edges[x][y+1] == 0 
-				and strong_edges[x+1][y+1] == 0 
-				and strong_edges[x+1][y] == 0 
-				and strong_edges[x+1][y-1] == 0 
-				and strong_edges[x][y-1] == 0):
+				if(np.sum(strong_edges[x-1:x+2, y-1:y+2]) - strong_edges[x,y]) > 0:
+					strong_edges[x,y] = weak_edges[x,y]
+					image[x,y,:] = weak_edges[x,y]
+				else:
+					image[x,y,:] = 0
+
+	for x in range(image.shape[0] - 1, 1, -1):
+		for y in range(image.shape[1] - 1, 1, -1):
+			if weak_edges[x][y] != 0:
+				if(np.sum(strong_edges[x-1:x+2, y-1:y+2]) - strong_edges[x,y]) > 0:
+					strong_edges[x,y] = weak_edges[x,y]
+					image[x,y,:] = weak_edges[x,y]
+				else:
 					image[x,y,:] = 0
 
 	return image

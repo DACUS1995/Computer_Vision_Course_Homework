@@ -1,7 +1,7 @@
 import math
 import numpy as np
 
-from base_filter import BaseFilter
+from Task_02.base_filter import BaseFilter
 
 class BoxFilter(BaseFilter):
 	def __init__(self, size):

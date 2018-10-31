@@ -6,8 +6,8 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-from gaussian_filter import GaussianFilter
-from box_filter import BoxFilter
+from Task_02.gaussian_filter import GaussianFilter
+from Task_02.box_filter import BoxFilter
 
 current_dir_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 argv = sys.argv
@@ -52,11 +52,15 @@ def main():
 	image_matrix = load_image("stop_sign_01.jpg")
 	show_image(image_matrix)
 
-	if argv[1] == "gaussian":
+	if len(argv) == 1:
 		run_gaussian_filter(image_matrix)
-	
-	if argv[1] == "box":
 		run_box_filter(image_matrix)
+	else:
+		if argv[1] == "gaussian":
+			run_gaussian_filter(image_matrix)
+
+		if argv[1] == "box":
+			run_box_filter(image_matrix)
 
 if __name__ == "__main__":
 	main()

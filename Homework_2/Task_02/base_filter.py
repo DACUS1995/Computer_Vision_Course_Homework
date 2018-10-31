@@ -18,11 +18,15 @@ class BaseFilter():
 				sum_g = 0
 				sum_b = 0
 
-				for i in range(self.size):
-					for j in range(self.size):
-						sum_r += image[x+i][y+j][0] * self.filter[i][j]
-						sum_g += image[x+i][y+j][1] * self.filter[i][j]
-						sum_b += image[x+i][y+j][2] * self.filter[i][j]
+				sum_r = np.sum(image[x:x+self.size, y:y+self.size,0] * self.filter)
+				sum_g = np.sum(image[x:x+self.size, y:y+self.size,1] * self.filter)
+				sum_b = np.sum(image[x:x+self.size, y:y+self.size,2] * self.filter)
+
+				# for i in range(self.size):
+				# 	for j in range(self.size):
+				# 		sum_r += image[x+i][y+j][0] * self.filter[i][j]
+				# 		sum_g += image[x+i][y+j][1] * self.filter[i][j]
+				# 		sum_b += image[x+i][y+j][2] * self.filter[i][j]
 
 				new_image[x][y][0] = sum_r
 				new_image[x][y][1] = sum_g

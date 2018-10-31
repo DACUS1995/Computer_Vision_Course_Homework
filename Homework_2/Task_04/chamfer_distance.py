@@ -70,7 +70,7 @@ class ChamferDistance():
 				# 		if template[i][j][0] == 1:
 				# 			sum += image_map[i+x][j+y][0]
 							
-				score_map[x][y] = sum
+				score_map[x][y] = sum / np.count_nonzero(template[:,:,0])
 		utils.show_image(score_map)
 		return score_map
 

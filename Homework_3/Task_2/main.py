@@ -7,8 +7,6 @@ def run_skin_hue_threshold(hsv_image, rgb_image):
 	if len(hsv_image.shape) != 3:
 		raise Exception("Wrong hvs_image size")
 
-	utils.show_image(hsv_image)
-
 	resulted_image = np.zeros([hsv_image.shape[0], hsv_image.shape[1]])
 
 	resulted_image[
@@ -37,7 +35,6 @@ def main():
 
 	resulted_image = run_skin_hue_threshold(hsv_image, rgb_image=image)
 	utils.show_image(resulted_image)
-
 
 if __name__ == "__main__":
 	main()

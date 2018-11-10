@@ -2,7 +2,7 @@ import numpy as np
 import utils
 import math
 
-from Task_2.main import run_skin_hue_threshold
+from Task_2 import run_skin_hue_threshold
 
 def dilate(image, kernel_size = 5):
 	print("---> Dilating")

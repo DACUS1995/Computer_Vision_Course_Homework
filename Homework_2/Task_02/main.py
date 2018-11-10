@@ -49,7 +49,7 @@ def run_box_filter(image_matrix):
 
 
 def main():
-	image_matrix = load_image("stop_sign_01.jpg")
+	image_matrix = load_image("stop_sign_04.jpg")
 	show_image(image_matrix)
 
 	if len(argv) == 1:

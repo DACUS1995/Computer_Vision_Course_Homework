@@ -5,7 +5,7 @@ import Task_03.main as fn
 from Task_04.template_finder import TemplateFinder
 from Task_04.chamfer_distance import ChamferDistance
 
-MULTI_DETECTION = True
+MULTI_DETECTION = False
 
 def extract_edges(image):
 	print("--> Preprocessing target image")
@@ -42,12 +42,12 @@ def run_image_detection(image, template_image):
 	# score_list, bounded_images = search_template(image, preprocessed_image, template_image)
 	# score_list, bounded_images = search_template(image, preprocessed_image, template_image, multi_detection=MULTI_DETECTION)
 
-	resulted_image = compute_results(score_list, bounded_images, method_used="Chamfer")
+	resulted_image = compute_results(score_list, bounded_images, method_used="template_matching")
 
 	return resulted_image
 
 def main():
-	image = utils.load_image(image_name = "stop_signs/stop_sign_04.jpg")
+	image = utils.load_image(image_name = "stop_signs/stop_sign_01.jpg")
 	template_image = utils.load_image(image_name = "template.png")
 
 	resulted_image = run_image_detection(image, template_image)

@@ -22,8 +22,8 @@ def dilate(image, kernel_size = 5):
 	utils.show_image(image)
 	utils.show_image(new_image)
 	return new_image[
-		int(kernel_size / 2) : new_image.shape[0] - int(kernel_size / 2), 
-		int(kernel_size / 2) : new_image.shape[1] - int(kernel_size / 2)
+		int(kernel_size / 2) : new_image.shape[0] - int(kernel_size / 2) - 1, 
+		int(kernel_size / 2) : new_image.shape[1] - int(kernel_size / 2) - 1
 	]
 
 def erode(image, kernel_size = 5):

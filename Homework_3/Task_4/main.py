@@ -19,7 +19,7 @@ def apply_closing(image):
 	return resulted_image
 
 def main():
-	rgb_image = utils.load_image("5.jpg")
+	rgb_image = utils.load_image("7.jpg")
 	hsv_image = utils.rgb_to_hsv(rgb_image)
 
 	resulted_image = run_skin_hue_threshold(hsv_image, rgb_image)
@@ -27,6 +27,10 @@ def main():
 	resulted_image = apply_closing(resulted_image)
 
 	utils.show_image(resulted_image)
+
+	rgb_image.setflags(write=True)
+	rgb_image[resulted_image == 0] = 0
+	utils.show_image(rgb_image)
 
 if __name__ == "__main__":
 	main()

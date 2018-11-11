@@ -1,0 +1,1 @@
+from Task_4.main import apply_opening, apply_closing

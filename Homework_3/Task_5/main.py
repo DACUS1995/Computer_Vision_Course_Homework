@@ -26,7 +26,7 @@ def group_blobs(image):
 		for y in range(1, image.shape[1] - 1):
 			if image[x,y] != 0:
 				if np.sum(new_image[x-1:x+2, y-1:y+2]) == 0:
-					linked[group_counter] = set()
+					linked[group_counter] = set([group_counter])
 					new_image[x,y] = group_counter
 					group_counter = group_counter + 1
 				else:
@@ -35,11 +35,12 @@ def group_blobs(image):
 					new_image[x,y] = min(L)
 					for label in L:
 						linked[label] = linked[label] | set(L)
+	utils.show_image(new_image)
 
 	for x in range(1, image.shape[0] - 1):
 		for y in range(1, image.shape[1] - 1):
 			if new_image[x,y] != 0:
-				new_image[x,y] = sorted(linked[label])[0]
+				new_image[x,y] = sorted(linked[new_image[x,y]])[0]
 
 	return new_image
 

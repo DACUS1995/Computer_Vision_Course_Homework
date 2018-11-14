@@ -14,34 +14,33 @@ def preprocess_image(rgb_image, hsv_image):
 	return resulted_image
 
 def group_blobs(image):
-	new_image = np.copy(image)
+	new_image = np.zeros(image.shape)
 	print("---> Running blob Grouping")
+
+	linked = {}
 
 	global group_counter
 
 	# Forward pass
-	for x in range(1, new_image.shape[0] - 1):
-		for y in range(1, new_image.shape[1] - 1):
-			if new_image[x,y] != 0:
-				max = np.amax(new_image[x-1 : x+2, y-1 : y+2])
-				
-				if max == 1:
-					max = group_counter
+	for x in range(1, image.shape[0] - 1):
+		for y in range(1, image.shape[1] - 1):
+			if image[x,y] != 0:
+				if np.sum(new_image[x-1:x+2, y-1:y+2]) == 0:
+					linked[group_counter] = set()
+					new_image[x,y] = group_counter
 					group_counter = group_counter + 1
-				
-				new_image[x, y] = max
+				else:
+					L = new_image[x-1:x+2, y-1:y+2].flatten()
+					L = L[L > 1]
+					new_image[x,y] = min(L)
+					for label in L:
+						linked[label] = linked[label] | set(L)
 
-	# Backward pass
-	for x in range(new_image.shape[0] - 1, 1, -1):
-		for y in range(new_image.shape[1] - 1, 1, -1):
+	for x in range(1, image.shape[0] - 1):
+		for y in range(1, image.shape[1] - 1):
 			if new_image[x,y] != 0:
-				max = np.amax(new_image[x-1:x+2, y-1:y+2])
-				
-				if max == 1:
-					raise Exception("In the backward pass there should not be any values of 1")
-				
-				new_image[x, y] = max
-	print(group_counter)
+				new_image[x,y] = sorted(linked[label])[0]
+
 	return new_image
 
 def compute_centers(image_map):
@@ -61,9 +60,6 @@ def main():
 	rgb_image = utils.load_image("5.jpg")
 	hsv_image = utils.rgb_to_hsv(rgb_image)
 
-	# draw = utils.draw_ellipse(rgb_image)
-	# utils.show_image(draw)
-
 	resulted_image = preprocess_image(rgb_image, hsv_image)
 	utils.show_image(resulted_image)
 
@@ -71,7 +67,13 @@ def main():
 	utils.show_image(grouped_image)
 
 	centers = compute_centers(grouped_image)
+	centers = [{"pos_x": center[0], "pos_y": center[1]} for center in centers]
+
 	print(centers)
+
+	drawn = utils.draw_multiple_ellipses(rgb_image, centers)
+	utils.show_image(drawn)
+
 
 
 if __name__ == "__main__":

@@ -34,7 +34,7 @@ def main():
 	hsv_image = utils.rgb_to_hsv(image)
 
 	resulted_image = run_skin_hue_threshold(hsv_image, rgb_image=image)
-	utils.show_image(resulted_image)
+	# utils.show_image(resulted_image)
 
 if __name__ == "__main__":
 	main()

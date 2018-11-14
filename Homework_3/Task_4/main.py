@@ -26,11 +26,11 @@ def main():
 	resulted_image = apply_opening(resulted_image)
 	resulted_image = apply_closing(resulted_image)
 
-	utils.show_image(resulted_image)
+	# utils.show_image(resulted_image)
 
 	rgb_image.setflags(write=True)
 	rgb_image[resulted_image == 0] = 0
-	utils.show_image(rgb_image)
+	# utils.show_image(rgb_image)
 
 if __name__ == "__main__":
 	main()

@@ -19,8 +19,8 @@ def dilate(image, kernel_size = 5):
 					i : i + 2 * int(kernel_size / 2) + 1,
 					j : j + 2 * int(kernel_size / 2) + 1
 				] = kernel
-	utils.show_image(image)
-	utils.show_image(new_image)
+	# utils.show_image(image)
+	# utils.show_image(new_image)
 	return new_image[
 		int(kernel_size / 2) : new_image.shape[0] - int(kernel_size / 2) - 1, 
 		int(kernel_size / 2) : new_image.shape[1] - int(kernel_size / 2) - 1
@@ -39,8 +39,8 @@ def erode(image, kernel_size = 5):
 				i : i + kernel_size, j : j + kernel_size
 			]) == kernel_size ** 2:
 				new_image[i + int(kernel_size / 2), j + int(kernel_size / 2)] = 1
-	utils.show_image(image)
-	utils.show_image(new_image)
+	# utils.show_image(image)
+	# utils.show_image(new_image)
 	return new_image
 
 def main():
@@ -51,7 +51,7 @@ def main():
 
 	resulted_image = erode(resulted_image, kernel_size=7)
 	resulted_image = dilate(resulted_image, kernel_size=7)
-	utils.show_image(resulted_image)
+	# utils.show_image(resulted_image)
 
 if __name__ == "__main__":
 	main()

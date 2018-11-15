@@ -33,21 +33,24 @@ def show_hsv_image(image):
 
 
 def draw_multiple_ellipses(image, details):
-	for key, prop in details:
-		prop = details[i]
-		if not "size_x" in prop:
-			prop["size_x"] = None
+	for key, value in details.items():
 
-		if not "size_y" in prop:
-			prop["size_y"] = None
+		if not "size_x" in value:
+			value[""] = None
 
-		if not "angle" in prop:
-			prop["angle"] = None
+		if not "size_y" in value:
+			value["size_y"] = None
+
+		if not "angle" in value:
+			value["angle"] = None
 
 		image = draw_ellipse(
 			image, 
-			math.ceil(prop["pos_y"]),
-			math.ceil(prop["pos_x"])
+			math.ceil(value["pos_y"]),
+			math.ceil(value["pos_x"]),
+			math.ceil(value["size_y"] / 2),
+			math.ceil(value["size_x"] / 2),
+			value["angle"],
 		)
 
 	return image
@@ -55,14 +58,14 @@ def draw_multiple_ellipses(image, details):
 
 def draw_ellipse(image, pos_x=300, pos_y=200, size_x=100, size_y=50, angle=90):
 	new_image = np.copy(image)
-
+	print("Angle: ", angle)
+	print("Height: ", size_x)
+	print("Width", size_y)
 	if pos_x == None or pos_y == None:
 		raise Exception("The x and y position must be specified.")
 
 	center = (pos_x, pos_y)
 	axes = (size_x, size_y)
-
-	print(center, axes)
 
 	cv2.ellipse(new_image, center, axes, angle, 0 , 360, (255,0,0), 2)
 	return new_image

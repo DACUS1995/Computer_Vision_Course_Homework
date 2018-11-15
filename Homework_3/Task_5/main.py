@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import math
 
 import utils
 from Task_4 import apply_opening, apply_closing
@@ -50,7 +52,7 @@ def group_blobs(image):
 def compute_centers(image_map, classes, faces):
 	print("---> Computing center of blobs")
 
-	for group in range(classes):
+	for group in classes:
 		positions = np.where(image_map == group)
 
 		if positions[0].size > 0 and (group in faces):
@@ -61,26 +63,51 @@ def compute_centers(image_map, classes, faces):
 	return faces
 
 
-def compute_orientation(image):
-	print("---> Computing orientation")
-	y, x = np.nonzero(image)
+def var_covar(points):
+	x = points[0]
+	y = points[1]
 
 	x = x - np.mean(x)
 	y = y - np.mean(y)
-	coords = np.vstack((x ,y))
+
+	cov = [
+		[np.sum(x * x) / x.size , np.sum(x * y) / x.size ],
+		[np.sum(x * y) / x.size, np.sum(y * y) / x.size]
+	]
+
+	return cov
+
+
+def compute_orientation(image):
+	print("---> Computing orientation")
+	x, y = np.nonzero(image)
+
+	# utils.show_image(image)
+
+	x = x - np.mean(x)
+	y = y - np.mean(y)
+	coords = np.vstack((x, y))
+
+
+
 	cov = np.cov(coords)
-	print(cov)
+	# cov = var_covar(coords)
+
 	evals, evecs = np.linalg.eig(cov)
 
-	sort_indices = np.argsort(evals)[::-1]
-	x_v1, y_v1 = evecs[:, sort_indices[0]]  # Eigenvector with largest eigenvalue
-	x_v2, y_v2 = evecs[:, sort_indices[1]]
+	print(evals)
 
-	theta = np.tanh((x_v1)/(y_v1))  
-	return theta
+	sort_indices = np.argsort(evals)[::-1]
+	x_v1, y_v1 = evecs[:, sort_indices[0]]  # largest
+	x_v2, y_v2 = evecs[:, sort_indices[1]]	# smallest
+
+	# theta = np.tanh((x_v1)/(y_v1))  
+
+	theta = math.fabs((math.atan2(x_v1, y_v1) * 180) / math.pi)
+	return theta - 90
 
 def main():
-	rgb_image = utils.load_image("5.jpg")
+	rgb_image = utils.load_image("2.jpg")
 	hsv_image = utils.rgb_to_hsv(rgb_image)
 
 	resulted_image = preprocess_image(rgb_image, hsv_image)
@@ -102,7 +129,7 @@ def main():
 		height = max_x - min_x
 		width = max_y - min_y
 
-		if height / width <  2:
+		if height / width <  2 and height > 30 and width > 15:
 			faces[el] = {}
 			faces[el]["size_x"] = height
 			faces[el]["size_y"] = width

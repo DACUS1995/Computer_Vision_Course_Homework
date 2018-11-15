@@ -4,7 +4,7 @@ import math
 
 from Task_2 import run_skin_hue_threshold
 
-def dilate(image, kernel_size = 5):
+def dilate(image, kernel_size = 11):
 	print("---> Dilating")
 	if kernel_size % 2 == 0:
 		raise Exception("The kernel size must be an odd number.")
@@ -26,7 +26,7 @@ def dilate(image, kernel_size = 5):
 		int(kernel_size / 2) : new_image.shape[1] - int(kernel_size / 2) - 1
 	]
 
-def erode(image, kernel_size = 5):
+def erode(image, kernel_size = 11):
 	print("---> Eroding")
 	if kernel_size % 2 == 0:
 		raise Exception("The kernel size must be an odd number.")
@@ -44,7 +44,7 @@ def erode(image, kernel_size = 5):
 	return new_image
 
 def main():
-	rgb_image = utils.load_image("5.jpg")
+	rgb_image = utils.load_image("7.jpg")
 	hsv_image = utils.rgb_to_hsv(rgb_image)
 
 	resulted_image = run_skin_hue_threshold(hsv_image, rgb_image)

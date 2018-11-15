@@ -33,7 +33,7 @@ def show_hsv_image(image):
 
 
 def draw_multiple_ellipses(image, details):
-	for i in range(len(details)):
+	for key, prop in details:
 		prop = details[i]
 		if not "size_x" in prop:
 			prop["size_x"] = None

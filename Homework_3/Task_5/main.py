@@ -42,20 +42,42 @@ def group_blobs(image):
 			if new_image[x,y] != 0:
 				new_image[x,y] = sorted(linked[new_image[x,y]])[0]
 
-	return new_image
+	class_list = np.array(list(set(new_image.flatten())))
+	class_list = class_list[class_list != 0]
+	return new_image, class_list
 
-def compute_centers(image_map):
+
+def compute_centers(image_map, classes, faces):
 	print("---> Computing center of blobs")
-	centers = []
-	global group_counter
 
-	for groups in range(2, group_counter):
-		positions = np.where(image_map == groups)
-		if positions[0].size > 0:
+	for group in range(classes):
+		positions = np.where(image_map == group)
+
+		if positions[0].size > 0 and (group in faces):
 			x_mean = np.mean(positions[0])
 			y_mean = np.mean(positions[1])
-			centers.append((x_mean, y_mean))
-	return centers
+			faces[group]["pos_x"] = x_mean
+			faces[group]["pos_y"] = y_mean
+	return faces
+
+
+def compute_orientation(image):
+	print("---> Computing orientation")
+	y, x = np.nonzero(image)
+
+	x = x - np.mean(x)
+	y = y - np.mean(y)
+	coords = np.vstack((x ,y))
+	cov = np.cov(coords)
+	print(cov)
+	evals, evecs = np.linalg.eig(cov)
+
+	sort_indices = np.argsort(evals)[::-1]
+	x_v1, y_v1 = evecs[:, sort_indices[0]]  # Eigenvector with largest eigenvalue
+	x_v2, y_v2 = evecs[:, sort_indices[1]]
+
+	theta = np.tanh((x_v1)/(y_v1))  
+	return theta
 
 def main():
 	rgb_image = utils.load_image("5.jpg")
@@ -64,15 +86,32 @@ def main():
 	resulted_image = preprocess_image(rgb_image, hsv_image)
 	utils.show_image(resulted_image)
 
-	grouped_image = group_blobs(resulted_image)
+	grouped_image, class_list = group_blobs(resulted_image)
 	utils.show_image(grouped_image)
 
-	centers = compute_centers(grouped_image)
-	centers = [{"pos_x": center[0], "pos_y": center[1]} for center in centers]
+	faces = {}
 
-	print(centers)
+	for el in class_list:
+		pos = np.where(grouped_image == el)
+		max_x = max(pos[0])
+		min_y = min(pos[1])
+		min_x = min(pos[0])
+		max_y = max(pos[1])
 
-	drawn = utils.draw_multiple_ellipses(rgb_image, centers)
+		# Applying proportion threshold
+		height = max_x - min_x
+		width = max_y - min_y
+
+		if height / width <  2:
+			faces[el] = {}
+			faces[el]["size_x"] = height
+			faces[el]["size_y"] = width
+
+			faces[el]["angle"] = compute_orientation(resulted_image[min_x:max_x, min_y:max_y])
+
+	faces = compute_centers(grouped_image, class_list, faces)
+
+	drawn = utils.draw_multiple_ellipses(rgb_image, faces)
 	utils.show_image(drawn)
 
 

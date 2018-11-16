@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import argparse
 
 import utils
 from Task_4 import apply_opening, apply_closing
@@ -106,8 +107,17 @@ def compute_orientation(image):
 	theta = math.fabs((math.atan2(x_v1, y_v1) * 180) / math.pi)
 	return theta - 90
 
+def load_arg_config():
+	parser = argparse.ArgumentParser("Face-Detection")
+	parser.add_argument("--file", type=str, default="1.jpg", help="name of the image to process")
+
+	args = parser.parse_args()
+	return args
+
 def main():
-	rgb_image = utils.load_image("2.jpg")
+	config = load_arg_config()
+
+	rgb_image = utils.load_image(config.file)
 	hsv_image = utils.rgb_to_hsv(rgb_image)
 
 	resulted_image = preprocess_image(rgb_image, hsv_image)

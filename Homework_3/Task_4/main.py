@@ -9,6 +9,7 @@ def apply_opening(image):
 	# First remove noise
 	resulted_image = erode(image, kernel_size=7)
 	resulted_image = dilate(resulted_image, kernel_size=7)
+	# utils.show_image(resulted_image)
 	return resulted_image
 
 def apply_closing(image):
@@ -16,10 +17,11 @@ def apply_closing(image):
 	# Fill the goles
 	resulted_image = dilate(image, kernel_size=7)
 	resulted_image = erode(resulted_image, kernel_size=7)
+	# utils.show_image(resulted_image)
 	return resulted_image
 
 def main():
-	rgb_image = utils.load_image("7.jpg")
+	rgb_image = utils.load_image("5.jpg")
 	hsv_image = utils.rgb_to_hsv(rgb_image)
 
 	resulted_image = run_skin_hue_threshold(hsv_image, rgb_image)

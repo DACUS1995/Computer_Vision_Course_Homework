@@ -101,7 +101,7 @@ def run_canny_edge_detector(image):
 
 
 def main():
-	image = utils.load_image(image_name = "stop_signs/stop_sign_01.jpg")
+	image = utils.load_image(image_name = "stop_signs/2.jpg")
 	image = run_canny_edge_detector(image)
 
 	utils.show_image(image)

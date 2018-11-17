@@ -79,7 +79,7 @@ def var_covar(points):
 	return cov
 
 
-def compute_orientation(image):
+def compute_orientation(image, faces):
 	print("---> Computing orientation")
 	x, y = np.nonzero(image)
 
@@ -89,16 +89,18 @@ def compute_orientation(image):
 	y = y - np.mean(y)
 	coords = np.vstack((x, y))
 
-
-
 	cov = np.cov(coords)
 	# cov = var_covar(coords)
 
 	evals, evecs = np.linalg.eig(cov)
-
 	print(evals)
 
 	sort_indices = np.argsort(evals)[::-1]
+
+	# faces["size_x"] = 2 * math.sqrt(evals[sort_indices[0]])
+	# faces["size_y"] = 2 * math.sqrt(evals[sort_indices[1]])
+	
+
 	x_v1, y_v1 = evecs[:, sort_indices[0]]  # largest
 	x_v2, y_v2 = evecs[:, sort_indices[1]]	# smallest
 
@@ -144,7 +146,7 @@ def main():
 			faces[el]["size_x"] = height
 			faces[el]["size_y"] = width
 
-			faces[el]["angle"] = compute_orientation(resulted_image[min_x:max_x, min_y:max_y])
+			faces[el]["angle"] = compute_orientation(resulted_image[min_x:max_x, min_y:max_y], faces[el])
 
 	faces = compute_centers(grouped_image, class_list, faces)
 

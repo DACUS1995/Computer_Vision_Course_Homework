@@ -1,1 +1,7 @@
 *.pyc
+*[1-9]*.jpg
+*[1-9]*.jpeg
+dilated.jpeg
+eroded.jpeg
+closing.jpeg
+opening.jpeg

@@ -3,6 +3,7 @@ import argparse
 import cv2 as cv
 
 import utils
+from Task_1.ransac import RANSAC
 
 def parse_args():
 	parser = argparse.ArgumentParser("Line-Detection")
@@ -13,13 +14,14 @@ def parse_args():
 def detect_lines(image):
 	edges = extract_edges(image)
 	utils.show_image(edges)
+	RANSAC.search(edges)
 	return edges
 
 
 def extract_edges(image):
 	edges = cv.Canny(image, 100, 200, L2gradient=True)
+	edges = edges / 255
 	return edges
-
 
 
 def main():

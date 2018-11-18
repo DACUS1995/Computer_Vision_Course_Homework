@@ -13,6 +13,7 @@ class RANSAC():
 
 	@staticmethod
 	def search(edge_map, component_class=1, number_of_samples=2, max_iterations=50):
+		print("--> Searching using class: [", component_class, "]")
 		# Select just points from the specified class
 		x, y = np.where(edge_map == component_class)
 		points = np.column_stack((x, y))
@@ -20,20 +21,29 @@ class RANSAC():
 		for i in range(max_iterations):
 			sample_points = np.random.choice(points.shape[0], size=number_of_samples, replace=False)
 			sample_points = np.array(points[sample_points])
-			number_of_inliners, inliner_points, line_eq = RANSAC.evaluate_samples(points, sample_points)
+			number_of_inliners, inline_points, line_eq = RANSAC.evaluate_samples(points, sample_points)
+
+			new_image = np.zeros(edge_map.shape)
 
 			if number_of_inliners > RANSAC.INLINERS_THRESHOLD:
-				# image = utils.draw_line(edge_map, sample_points[0], sample_points[1])
-				image = utils.draw_line_eq(edge_map, line_eq)
+				# Find the heads of the line
+				inline_points.sort(key=lambda x : x[0])
+
+				new_image = utils.draw_line(new_image, inline_points[0], inline_points[len(inline_points) - 1])
+				# image = utils.draw_line(edge_map, inline_points[0], inline_points[len(inline_points) - 1])
+				# image = utils.draw_line_eq(edge_map, line_eq)
 				
-				utils.show_image(image)
-				print(i, ": ", number_of_inliners)
+				# utils.show_image(image)
+				# print(i, ": ", number_of_inliners)
+
+		utils.show_image(new_image)
+		
 
 
 	@staticmethod
 	def evaluate_samples(points, sample_points, limit=5):
 		counter = 0
-		inliner_points = []
+		inline_points = []
 		# Determine the equation that represents the line of the two points
 		m, b = RANSAC.line_model(sample_points)
 
@@ -44,9 +54,9 @@ class RANSAC():
 			
 			if distance < RANSAC.DISTANCE_THRESHOLD:
 				counter += 1
-				inliner_points.append(point)
+				inline_points.append(point)
 
-		return counter, inliner_points, (m, b)
+		return counter, inline_points, (m, b)
 
 	@staticmethod
 	def line_model(points):

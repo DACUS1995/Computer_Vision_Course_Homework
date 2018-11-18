@@ -13,15 +13,26 @@ def parse_args():
 
 def detect_lines(image):
 	edges = extract_edges(image)
-	utils.show_image(edges)
-	RANSAC.search(edges)
-	return edges
+	labeled_image, labeled_image, num_labels = find_connected_components(edges)
+
+	utils.show_image(labeled_image)
+
+	# For each label find the lines the belong to the component
+	for label in range(1, num_labels):
+		RANSAC.search(labeled_image, label)
+
+	return labeled_image
 
 
 def extract_edges(image):
 	edges = cv.Canny(image, 100, 200, L2gradient=True)
-	edges = edges / 255
+	# edges = edges / 255
 	return edges
+
+def find_connected_components(image):
+	num_labels, labeled_image = cv.connectedComponents(image, connectivity=8)
+	print("---> Found [", num_labels, "] connected componenets.")
+	return image, labeled_image, num_labels
 
 
 def main():

@@ -13,13 +13,14 @@ class RANSAC():
 	INLINERS_THRESHOLD = 100
 
 	@staticmethod
-	def search(edge_map, component_class=1, number_of_samples=2, max_iterations=2000):
+	def search(edge_map, component_class=1, number_of_samples=2, max_iterations=2000, output_image=None) -> np.ndarray:
 		print("--> Searching using class: [", component_class, "]")
 		# Select just points from the specified class
 		x, y = np.where(edge_map == component_class)
 		points = np.column_stack((x, y))
 
-		new_image = np.zeros(edge_map.shape)
+		new_image = np.zeros(edge_map.shape) if output_image is None else output_image
+
 		for _ in range(max_iterations):
 			print("Iteration [", _,"]  Points remaining: ", points.shape[0])
 			if points.shape[0] == 0:
@@ -64,7 +65,8 @@ class RANSAC():
 				# utils.show_image(new_image)
 				# print(i, ": ", number_of_inliners)
 
-		utils.show_image(new_image)
+		# utils.show_image(new_image)
+		return new_image
 		
 
 

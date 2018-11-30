@@ -15,14 +15,16 @@ def detect_lines(image):
 	edges = extract_edges(image)
 	image, labeled_image, num_labels = find_connected_components(edges)
 
-	utils.show_image(labeled_image)
-	utils.show_image(image)
+	# utils.show_image(labeled_image)
+	# utils.show_image(image)
+
+	output_image = None
 
 	# For each label find the lines the belong to the component
 	for label in range(1, num_labels):
-		RANSAC.search(labeled_image, label)
+		output_image = RANSAC.search(labeled_image, label, output_image=output_image)
 
-	return labeled_image
+	return output_image
 
 
 def extract_edges(image):
@@ -40,7 +42,8 @@ def main():
 	args = parse_args()
 
 	image = utils.load_image(args.file)
-	detect_lines(image)
+	output_image = detect_lines(image)
+	utils.show_image(output_image)
 
 
 if __name__ == "__main__":

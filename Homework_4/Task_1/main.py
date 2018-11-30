@@ -13,9 +13,10 @@ def parse_args():
 
 def detect_lines(image):
 	edges = extract_edges(image)
-	labeled_image, labeled_image, num_labels = find_connected_components(edges)
+	image, labeled_image, num_labels = find_connected_components(edges)
 
 	utils.show_image(labeled_image)
+	utils.show_image(image)
 
 	# For each label find the lines the belong to the component
 	for label in range(1, num_labels):

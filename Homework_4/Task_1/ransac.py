@@ -8,7 +8,7 @@ class RANSAC():
 	def __init__(self):
 		raise Exception("Only static methods. Do not instantiate!")
 
-	DISTANCE_THRESHOLD = 10
+	DISTANCE_THRESHOLD = 5
 	INLINERS_THRESHOLD = 50
 
 	@staticmethod
@@ -18,22 +18,46 @@ class RANSAC():
 		x, y = np.where(edge_map == component_class)
 		points = np.column_stack((x, y))
 
-		for i in range(max_iterations):
+		new_image = np.zeros(edge_map.shape)
+		for _ in range(max_iterations):
+			if points.shape[0] == 0:
+				break
+
 			sample_points = np.random.choice(points.shape[0], size=number_of_samples, replace=False)
 			sample_points = np.array(points[sample_points])
 			number_of_inliners, inline_points, line_eq = RANSAC.evaluate_samples(points, sample_points)
 
-			new_image = np.zeros(edge_map.shape)
 
 			if number_of_inliners > RANSAC.INLINERS_THRESHOLD:
-				# Find the heads of the line
-				inline_points.sort(key=lambda x : x[0])
+				# Find the ends of the line
+				# Sort the inline points by the value of the slope so that we use the correct max values
+				if line_eq[0] > 1:
+					inline_points.sort(key=lambda x : x[0])
+				else:
+					inline_points.sort(key=lambda x : x[1])
 
 				new_image = utils.draw_line(new_image, inline_points[0], inline_points[len(inline_points) - 1])
+
+				# Remove the points used in the last search
+				for j in range(len(inline_points)):
+					index = np.where((points[:, 0] == inline_points[j][0]) & (points[:, 1] == inline_points[j][1]))
+					points = np.delete(points, index, axis=0)
+				
+				# l = 0
+				# end = points.shape[0]
+				# while l <= end:
+				# 	for j in range(len(inline_points)):
+				# 		if(l >= end): break
+				# 		print(end)
+				# 		if np.array_equal(points[l], inline_points[j]):
+				# 			points = np.delete(points, l, 0)
+				# 			end -= 1
+				# 	l += 1
+
 				# image = utils.draw_line(edge_map, inline_points[0], inline_points[len(inline_points) - 1])
 				# image = utils.draw_line_eq(edge_map, line_eq)
 				
-				# utils.show_image(image)
+				# utils.show_image(new_image)
 				# print(i, ": ", number_of_inliners)
 
 		utils.show_image(new_image)
@@ -41,7 +65,7 @@ class RANSAC():
 
 
 	@staticmethod
-	def evaluate_samples(points, sample_points, limit=5):
+	def evaluate_samples(points, sample_points, limit=5) -> tuple:
 		counter = 0
 		inline_points = []
 		# Determine the equation that represents the line of the two points

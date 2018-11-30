@@ -1,0 +1,1 @@
+from Task_1.main import detect_lines

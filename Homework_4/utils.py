@@ -84,6 +84,9 @@ def draw_line(image, point_1, point_2):
 		point_1 = tuple(i  for i in point_1)
 		point_2 = tuple(i for i in point_2)
 
+	point_1 = (point_1[1], point_1[0])
+	point_2 = (point_2[1], point_2[0])
+
 	new_image = np.copy(image)
 	cv2.line(new_image, point_1, point_2, (255,0,0))
 	return new_image

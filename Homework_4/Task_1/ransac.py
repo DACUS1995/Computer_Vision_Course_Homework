@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import cv2 as cv
+import sys
 
 import utils
 
@@ -8,11 +9,11 @@ class RANSAC():
 	def __init__(self):
 		raise Exception("Only static methods. Do not instantiate!")
 
-	DISTANCE_THRESHOLD = 5
-	INLINERS_THRESHOLD = 50
+	DISTANCE_THRESHOLD = 2
+	INLINERS_THRESHOLD = 100
 
 	@staticmethod
-	def search(edge_map, component_class=1, number_of_samples=2, max_iterations=50):
+	def search(edge_map, component_class=1, number_of_samples=2, max_iterations=2000):
 		print("--> Searching using class: [", component_class, "]")
 		# Select just points from the specified class
 		x, y = np.where(edge_map == component_class)
@@ -20,6 +21,7 @@ class RANSAC():
 
 		new_image = np.zeros(edge_map.shape)
 		for _ in range(max_iterations):
+			print("Iteration [", _,"]  Points remaining: ", points.shape[0])
 			if points.shape[0] == 0:
 				break
 
@@ -27,14 +29,16 @@ class RANSAC():
 			sample_points = np.array(points[sample_points])
 			number_of_inliners, inline_points, line_eq = RANSAC.evaluate_samples(points, sample_points)
 
-
 			if number_of_inliners > RANSAC.INLINERS_THRESHOLD:
 				# Find the ends of the line
 				# Sort the inline points by the value of the slope so that we use the correct max values
 				if line_eq[0] > 1:
 					inline_points.sort(key=lambda x : x[0])
+					print(line_eq, " ", inline_points[0], " ", inline_points[len(inline_points) - 1], " ", len(inline_points))
+
 				else:
 					inline_points.sort(key=lambda x : x[1])
+					print(line_eq, " ", inline_points[0], " ", inline_points[len(inline_points) - 1], " ", len(inline_points))
 
 				new_image = utils.draw_line(new_image, inline_points[0], inline_points[len(inline_points) - 1])
 
@@ -73,7 +77,11 @@ class RANSAC():
 
 		for i in range(points.shape[0]):
 			point = points[i]
-			x0, y0 = RANSAC.closest_point_to_line(m, b, point)
+			if m == 200:
+				x0 = sample_points[0,0]
+				y0 = point[1]
+			else:
+				x0, y0 = RANSAC.closest_point_to_line(m, b, point)
 			distance = math.sqrt((x0 - point[0]) ** 2 + (y0 - point[1]) ** 2)
 			
 			if distance < RANSAC.DISTANCE_THRESHOLD:
@@ -84,12 +92,13 @@ class RANSAC():
 
 	@staticmethod
 	def line_model(points):
-		m = (points[1, 1] - points[0, 1]) / (points[1, 0] - points[0, 0])
+		m = (points[1, 1] - points[0, 1]) / (points[1, 0] - points[0, 0] + sys.float_info.epsilon)
 		b = points[0, 1] - m * points[0, 0]
+		if points[1, 0] - points[0, 0] >= 0 and points[1, 0] - points[0, 0] <= 2: m = 200
 		return m, b
 
 	@staticmethod
-	def closest_point_to_line(m, b, point):
+	def closest_point_to_line(m, b, point) -> tuple:
 		x = (point[0] + m * point[1] - m * b) / (1 + m ** 2)
 		y = (m * point[0] + (m ** 2) * point[1] - ( m ** 2) * b) / (1 + m ** 2) + b
 		return x, y

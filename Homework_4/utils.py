@@ -88,7 +88,7 @@ def draw_line(image, point_1, point_2):
 	point_2 = (point_2[1], point_2[0])
 
 	new_image = np.copy(image)
-	cv2.line(new_image, point_1, point_2, (255,0,0))
+	cv2.line(new_image, point_1, point_2, (30,144,255), thickness=4)
 	return new_image
 
 

@@ -11,7 +11,8 @@ def parse_args():
 	args = parser.parse_args()
 	return args
 
-def detect_lines(image):
+def detect_lines(image, use_original=False):
+	original_image = np.copy(image) if use_original else None
 	edges = extract_edges(image)
 	image, labeled_image, num_labels = find_connected_components(edges)
 
@@ -22,9 +23,9 @@ def detect_lines(image):
 
 	# For each label find the lines the belong to the component
 	for label in range(1, num_labels):
-		output_image = RANSAC.search(labeled_image, label, output_image=output_image)
+		output_image, lines_eq, lines_points = RANSAC.search(labeled_image, label, output_image=output_image, original_image=original_image)
 
-	return output_image
+	return output_image, lines_eq, lines_points
 
 
 def extract_edges(image):
@@ -42,7 +43,7 @@ def main():
 	args = parse_args()
 
 	image = utils.load_image(args.file)
-	output_image = detect_lines(image)
+	output_image, _, _ = detect_lines(image)
 	utils.show_image(output_image)
 
 

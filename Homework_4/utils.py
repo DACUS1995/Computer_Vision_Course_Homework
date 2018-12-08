@@ -91,7 +91,12 @@ def draw_line(image, point_1, point_2):
 	cv2.line(new_image, point_1, point_2, (30,144,255), thickness=4)
 	return new_image
 
-
+def draw_circle(image, *points) -> np.ndarray:
+	for point in points:
+		print("Drawing: ", point)
+		rounded_point = tuple(math.ceil(i) for i in point)
+		cv2.circle(image, rounded_point, 5, (205,92,92), -1)
+	return image
 
 if __name__ == "__main__":
 	raise Exception("Must not be runned as a module.")

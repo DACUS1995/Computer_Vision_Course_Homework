@@ -20,12 +20,18 @@ def detect_lines(image, use_original=False):
 	# utils.show_image(image)
 
 	output_image = None
+	lines_eq_all = [] 
+	lines_points_all = [] 
+	lines_class_all = []
 
 	# For each label find the lines the belong to the component
 	for label in range(1, num_labels):
-		output_image, lines_eq, lines_points = RANSAC.search(labeled_image, label, output_image=output_image, original_image=original_image)
+		output_image, lines_eq, lines_points, lines_class = RANSAC.search(labeled_image, label, output_image=output_image, original_image=original_image)
+		lines_eq_all.extend(lines_eq)
+		lines_points_all.extend(lines_points)
+		lines_class_all.extend(lines_class)
 
-	return output_image, lines_eq, lines_points
+	return output_image, lines_eq_all, lines_points_all, lines_class_all
 
 
 def extract_edges(image):

@@ -24,6 +24,7 @@ class RANSAC():
 
 		lines_eq = []
 		lines_points = []
+		lines_class = []
 
 		for _ in range(max_iterations):
 			print("Iteration [", _,"]  Points remaining: ", points.shape[0])
@@ -49,6 +50,7 @@ class RANSAC():
 
 				lines_eq.append(line_eq)
 				lines_points.append((first_point, second_point))
+				lines_class.append(component_class)
 				
 				print((first_point, second_point))
 				new_image = utils.draw_line(new_image, first_point, second_point)
@@ -60,7 +62,7 @@ class RANSAC():
 				
 
 		# utils.show_image(new_image)
-		return new_image, lines_eq, lines_points
+		return new_image, lines_eq, lines_points, lines_class
 		
 
 
@@ -69,7 +71,7 @@ class RANSAC():
 		counter = 0
 		inline_points = []
 		# Determine the equation that represents the line of the two points
-		m, b = RANSAC.line_model(sample_points)
+		m, b, c = RANSAC.line_model(sample_points)
 
 		for i in range(points.shape[0]):
 			point = points[i]
@@ -84,14 +86,17 @@ class RANSAC():
 				counter += 1
 				inline_points.append(point)
 
-		return counter, inline_points, (m, b)
+		return counter, inline_points, (m, b, c)
 
 	@staticmethod
 	def line_model(points):
 		m = (points[1, 1] - points[0, 1]) / (points[1, 0] - points[0, 0] + sys.float_info.epsilon)
 		b = points[0, 1] - m * points[0, 0]
 		if points[1, 0] - points[0, 0] >= 0 and points[1, 0] - points[0, 0] <= 2: m = 200
-		return m, b
+		c = None
+		if b > 5000 or b < -5000: 
+			c = points[1, 0]
+		return m, b, c
 
 	@staticmethod
 	def closest_point_to_line(m, b, point) -> tuple:

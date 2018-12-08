@@ -1,10 +1,11 @@
 import numpy as np
 import argparse
 import cv2 as cv
+from typing import Dict, Tuple, List
 
 from Task_1 import detect_lines
-import utils
 from Task_2.rectangles import Rectangle_finder
+import utils
 
 def parse_args():
 	parser = argparse.ArgumentParser("Line-Detection")
@@ -17,9 +18,13 @@ def main():
 	args = parse_args()
 
 	image = utils.load_image(args.file)
-	output_image, lines_eq, lines_points = detect_lines(image, use_original=False)
+	output_image, lines_eq, lines_points, lines_class = detect_lines(image, use_original=False)
 
-	Rectangle_finder.search(lines_eq, lines_points)
+	rectangles = Rectangle_finder.search(lines_eq, lines_points, lines_class)
+	print(rectangles)
+	for points in rectangles:
+		print()
+		output_image = utils.draw_circle(output_image, *points)
 
 	utils.show_image(output_image)
 

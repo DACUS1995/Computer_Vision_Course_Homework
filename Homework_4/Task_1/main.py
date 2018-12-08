@@ -26,7 +26,7 @@ def detect_lines(image, use_original=False):
 
 	# For each label find the lines the belong to the component
 	for label in range(1, num_labels):
-		output_image, lines_eq, lines_points, lines_class = RANSAC.search(labeled_image, label, output_image=output_image, original_image=original_image)
+		output_image, lines_eq, lines_points, lines_class = RANSAC.search(labeled_image, label, output_image=output_image, original_image=original_image, total_classes_number=num_labels)
 		lines_eq_all.extend(lines_eq)
 		lines_points_all.extend(lines_points)
 		lines_class_all.extend(lines_class)

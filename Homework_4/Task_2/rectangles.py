@@ -26,7 +26,7 @@ class Rectangle_finder:
 
 			slope_dict = {}
 			for i in range(current_lines_eq.shape[0]):
-				current_slope = round(current_lines_eq[i, 0], 2)
+				current_slope = round(current_lines_eq[i, 0], 1)
 				if current_slope in slope_dict:
 					slope_dict[current_slope].append(current_lines_eq[i])
 				else:

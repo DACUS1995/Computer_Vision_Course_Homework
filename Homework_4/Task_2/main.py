@@ -18,7 +18,7 @@ def main():
 	args = parse_args()
 
 	image = utils.load_image(args.file)
-	output_image, lines_eq, lines_points, lines_class = detect_lines(image, use_original=False)
+	output_image, lines_eq, lines_points, lines_class = detect_lines(image, use_original=True)
 
 	rectangles = Rectangle_finder.search(lines_eq, lines_points, lines_class)
 	print(rectangles)

@@ -20,7 +20,7 @@ class RANSAC():
 		points = np.column_stack((x, y))
 
 		new_image = np.zeros(edge_map.shape) if output_image is None else output_image
-		new_image = new_image if original_image is None else original_image
+		# new_image = new_image if original_image is None else original_image
 
 		lines_eq = []
 		lines_points = []
@@ -92,9 +92,10 @@ class RANSAC():
 	def line_model(points):
 		m = (points[1, 1] - points[0, 1]) / (points[1, 0] - points[0, 0] + sys.float_info.epsilon)
 		b = points[0, 1] - m * points[0, 0]
-		if points[1, 0] - points[0, 0] >= 0 and points[1, 0] - points[0, 0] <= 2: m = 200
+		# if points[1, 0] - points[0, 0] >= 0 and points[1, 0] - points[0, 0] <= 2: m = 200
 		c = None
 		if b > 5000 or b < -5000: 
+			m = 200
 			c = points[1, 0]
 		return m, b, c
 

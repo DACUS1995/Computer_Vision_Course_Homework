@@ -25,14 +25,20 @@ class Rectangle_finder:
 			current_lines_points = lines_points[line_indices]
 
 			slope_dict = {}
+			points_dict = {}
 			for i in range(current_lines_eq.shape[0]):
 				current_slope = round(current_lines_eq[i, 0], 1)
 				if current_slope in slope_dict:
 					slope_dict[current_slope].append(current_lines_eq[i])
+					points_dict[current_slope].append(current_lines_points[i])
 				else:
 					slope_dict[current_slope] = [current_lines_eq[i]]
+					points_dict[current_slope] = [current_lines_points[i]]
 			print("class: ", class_ID)
 			print(slope_dict)
+			print("-------------------")
+			print("class: ", class_ID)
+			print(points_dict)
 			print("-------------------")
 
 			for slope_one, lines_eq_arr_one in slope_dict.items():
@@ -40,12 +46,20 @@ class Rectangle_finder:
 					if slope_one == slope_two: continue
 					if len(lines_eq_arr_one) < 2: continue
 					if len(lines_eq_arr_two) < 2: continue
+
+					points_arr_one = points_dict[slope_one]
+					points_arr_two = points_dict[slope_two]
 					
 					for i in range(len(lines_eq_arr_one) - 1):
 						for j in range(i, len(lines_eq_arr_one)):
 
 							for l in range(len(lines_eq_arr_two) - 1):
 								for k in range(l, len(lines_eq_arr_two)):
+
+									points_1_1 = points_arr_one[i]
+									points_1_2 = points_arr_one[j]
+									points_2_1 = points_arr_two[l]
+									points_2_2 = points_arr_two[k]
 
 									if i ==j: continue
 									if l == k: continue
@@ -94,7 +108,6 @@ class Rectangle_finder:
 										b4 = 0
 										y2 = m1 * x2 + b1
 										y4 = m2 * x4 + b2
-
 
 									rectangles.append(((y1, x1), (y2, x2), (y3, x3), (y4, x4)))
 									
